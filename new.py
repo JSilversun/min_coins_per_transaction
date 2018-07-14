@@ -8,10 +8,10 @@ def calculateExhange(amount, payment, coins):
         return m_exchange[exchange]
     exchange_coins=[0 for i in range(0,len(coins))]
     subtotal=0
-    for coin in coins:
-        if coin<=(exchange-subtotal):
-            exchange_coin=(exchange-subtotal)/coin
-            subtotal+=exchange_coin*coin
+    for d in range(0,len(coins)):
+        if coins[d]<=(exchange-subtotal):
+            exchange_coins[d]=(exchange-subtotal)/coins[d]
+            subtotal+=exchange_coins[d]*coins[d]
     if subtotal<exchange:
         return None
     else:
@@ -31,24 +31,23 @@ def recursive(current, subtotal):
                 recursive(i+1, subtotal)
             subtotal-=payment_coins[i]*coins[i]
 
-def checkPayment(payment_coins):
-    global min_coins, used_coins, amount
-    total_per_coin=list(map(lambda x, y: x*y, payment_coins,coins))
-    total_payment=reduce((lambda x,y:x+y),total_per_coin)
-    total_payment_coins=reduce((lambda x,y:x+y),payment_coins)
-    exchange_coins=calculateExhange(amount, total_payment, coins)
-    min_reached=False
-    
-    if exchange_coins is not None:
-        total_exchange_coins=reduce((lambda x,y:x+y),exchange_coins)
-        used_coins=total_payment_coins+total_exchange_coins
-        if used_coins<min_coins:
-            #print(list(map(lambda x, y: str(x)+" "+str(y), payment_coins,coins)))
-            #print(list(map(lambda x, y: str(x)+" "+str(y), exchange_coins,coins)))
-            min_reached=True
-            min_coins=used_coins
-    
-    return min_reached
+def minCoins(coins, m, amount):
+    if (amount == 0):
+        return 0
+ 
+    res = sys.maxsize
+    table={}
+    table[0]=0 
+    table=[sys.maxsize for _ in range(0,amount)]
+    for i in range(0, amount):
+        table[i]=sys.maxsize
+        for j in range(0,m):
+            if coins[j]<=i:
+                sub_result=table[i-coins[j]]
+            if sub_result!=sys.maxsize and sub_result+1<table[i]:
+                table[i]=sub_result+1
+ 
+    return table[amount]
 
 fname="input.txt"
 lines=[line.rstrip('\r\n') for line in open(fname)]
@@ -85,5 +84,3 @@ for i in range(2,len(lines)-1):
             max_coins=min_coins
     average=round(Decimal(total_coins)/Decimal(n),2)
     print(str(average)+" "+str(max_coins))
-
-    
