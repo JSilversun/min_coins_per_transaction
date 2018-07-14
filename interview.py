@@ -1,5 +1,7 @@
 import sys
 def get_min_coins(coins, amount):
+    """ Given an array of coins and a given value "amount" this function returns an array where each index point to the minimum number of coins needed to make that amount exactly
+    """
     results=[sys.maxsize for _ in range(0,amount+1)]
     results[0]=0 
     for current_amount in range(1, amount+1):
@@ -24,6 +26,9 @@ for i in range(1,len(lines)):
     total=0
     for amount in range(1,n+1):
         min_coins=result[amount]
+        # The minimum number of coins per transaction could be where payment=amount then the exchange is 0 
+        # Otherwise payment>amount, so we check every possible payment and see if the number of coins for that payment + number of coins per exchange is minimum
+        # If so, we save it
         for x in range(amount,n+max(coins)):
             if min_coins>result[x]+result[x-amount]:
                 min_coins=result[x]+result[x-amount]
